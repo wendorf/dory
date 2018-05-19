@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service Dory {
+    rpc GetMemory(GetMemoryRequest) returns (Memory) {}
+    rpc CreateMemory(CreateMemoryRequest) returns (google.protobuf.Empty) {}
+}
+
+message Memory {
+    string name = 1;
+    string value = 2;
+    google.protobuf.Timestamp expiration = 3;
+}
+
+message GetMemoryRequest {
+    string name = 1;
+}
+
+message CreateMemoryRequest {
+    Memory memory = 1;
+}

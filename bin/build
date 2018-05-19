@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+label=com.danwendorf.dory-agent
+plist="${HOME}/Library/LaunchAgents/${label}.plist"
+
+protoc -I service/ service/*.proto --go_out=plugins=grpc:service
+go build -o /usr/local/bin/dory main.go
+
+if [ -f "${plist}" ]; then
+    rm "${plist}"
+fi
+
+cp "$(dirname ${BASH_SOURCE[0]})/../assets/${label}.plist" "${plist}"
+
+if ! launchctl list | grep "${label}"; then
+    launchctl load "${plist}"
+fi
+
+launchctl stop com.danwendorf.dory-agent
+launchctl start com.danwendorf.dory-agent
