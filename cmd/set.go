@@ -10,6 +10,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/wendorf/dory/client"
+	"github.com/wendorf/dory/config"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -60,12 +61,7 @@ var setCommand = &cobra.Command{
 			value = string(byteValue)
 		}
 
-		socketPath, ok := os.LookupEnv("DORY_SOCK")
-		if !ok {
-			log.Fatalln("DORY_SOCK must be specified")
-		}
-
-		doryClient, err := client.NewClient(socketPath)
+		doryClient, err := client.NewClient(config.SocketPath())
 		if err != nil {
 			log.Fatalf("could not create client: %v\n", err)
 		}

@@ -3,10 +3,10 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/wendorf/dory/client"
+	"github.com/wendorf/dory/config"
 )
 
 func init() {
@@ -20,17 +20,12 @@ var getCommand = &cobra.Command{
 	Short: "Get a memory",
 	Long:  "Get a memory",
 	Run: func(cmd *cobra.Command, args []string) {
-		socketPath, ok := os.LookupEnv("DORY_SOCK")
-		if !ok {
-			log.Fatalln("DORY_SOCK must be specified")
-		}
-
 		name, err := cmd.Flags().GetString("name")
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		doryClient, err := client.NewClient(socketPath)
+		doryClient, err := client.NewClient(config.SocketPath())
 		if err != nil {
 			log.Fatalf("could not create client: %v\n", err)
 		}
