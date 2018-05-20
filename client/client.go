@@ -26,7 +26,7 @@ func NewClient(socketPath string) (*DoryClient, error) {
 	}, nil
 }
 
-func (d *DoryClient) CreateMemory(key, value string, duration time.Duration) error {
+func (d *DoryClient) CreateMemory(key string, value []byte, duration time.Duration) error {
 	expiration, err := ptypes.TimestampProto(time.Now().Add(duration))
 	if err != nil {
 		return fmt.Errorf("could not create timestamp: %v", err)
@@ -41,10 +41,10 @@ func (d *DoryClient) CreateMemory(key, value string, duration time.Duration) err
 	return nil
 }
 
-func (d *DoryClient) GetMemory(key string) (string, error) {
+func (d *DoryClient) GetMemory(key string) ([]byte, error) {
 	mem, err := d.client.GetMemory(context.Background(), &memory.GetMemoryRequest{Name: key})
 	if err != nil {
-		return "", fmt.Errorf("failed get memory: %v\n", err)
+		return nil, fmt.Errorf("failed get memory: %v\n", err)
 	}
 
 	return mem.Value, nil

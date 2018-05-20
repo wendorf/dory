@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"syscall"
@@ -38,27 +38,27 @@ var setCommand = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		var value string
+		var value []byte
 		if cmd.Flags().Changed("value") {
-			value, err = cmd.Flags().GetString("value")
+			valueParam, err := cmd.Flags().GetString("value")
 
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			value = []byte(valueParam)
 		} else if !terminal.IsTerminal(int(syscall.Stdin)) {
-			value = ""
-			s := bufio.NewScanner(os.Stdin)
-			for s.Scan() {
-				value+=s.Text()
+			value, err = ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				log.Fatal(err)
 			}
 		} else {
 			fmt.Print("Enter value: ")
-			byteValue, err := terminal.ReadPassword(int(syscall.Stdin))
+			value, err = terminal.ReadPassword(int(syscall.Stdin))
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Print("\n")
-			value = string(byteValue)
 		}
 
 		doryClient, err := client.NewClient(config.SocketPath())

@@ -61,7 +61,7 @@ func (b *Brain) Get(key string) ([]byte, error) {
 	if secMem.value != nil {
 		return secMem.value.Buffer(), nil
 	} else {
-		return []byte{}, nil
+		return nil, nil
 	}
 }
 

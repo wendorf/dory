@@ -44,7 +44,7 @@ func (d *DoryServer) GetMemory(ctx context.Context, request *memory.GetMemoryReq
 		return nil, status.Errorf(codes.FailedPrecondition, "memory does not exist: %s", request.Name)
 	}
 
-	return &memory.Memory{Value: string(val)}, nil
+	return &memory.Memory{Value: val}, nil
 }
 
 func (d *DoryServer) CreateMemory(ctx context.Context, request *memory.CreateMemoryRequest) (*empty.Empty, error) {

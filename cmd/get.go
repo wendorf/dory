@@ -3,10 +3,13 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
+	"syscall"
 
 	"github.com/spf13/cobra"
 	"github.com/wendorf/dory/client"
 	"github.com/wendorf/dory/config"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func init() {
@@ -35,6 +38,9 @@ var getCommand = &cobra.Command{
 			log.Fatalf("could not get memory %s: %v\n", name, err)
 		}
 
-		fmt.Println(value)
+		os.Stdout.Write(value)
+		if terminal.IsTerminal(int(syscall.Stdout)) {
+			fmt.Print("\n")
+		}
 	},
 }
