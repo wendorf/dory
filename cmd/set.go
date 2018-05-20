@@ -67,7 +67,8 @@ var setCommand = &cobra.Command{
 		}
 
 		if err := doryClient.CreateMemory(name, value, duration); err != nil {
-			log.Fatalf("could not talk to server: %v\n", err)
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
 		}
 
 		fmt.Printf("Successfully set %s\n", name)

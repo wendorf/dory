@@ -35,7 +35,8 @@ var getCommand = &cobra.Command{
 
 		value, err := doryClient.GetMemory(name)
 		if err != nil {
-			log.Fatalf("could not get memory %s: %v\n", name, err)
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
 		}
 
 		os.Stdout.Write(value)
