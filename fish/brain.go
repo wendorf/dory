@@ -58,22 +58,31 @@ func (b *Brain) Get(key string) ([]byte, error) {
 		return nil, errors.New("key expired")
 	}
 
-	return secMem.value.Buffer(), nil
+	if secMem.value != nil {
+		return secMem.value.Buffer(), nil
+	} else {
+		return []byte{}, nil
+	}
 }
 
 func (b *Brain) Set(key string, val []byte, expiration time.Time) (error) {
 	b.mux.Lock()
 	defer b.mux.Unlock()
 
-	lockedBuffer, err := memguard.NewImmutableFromBytes([]byte(val))
-	if err != nil {
-		return err
+	secureMemory := &secureMemory{
+		expiration: expiration,
 	}
 
-	b.memories[key] = &secureMemory{
-		expiration: expiration,
-		value:      lockedBuffer,
+	if len(val) != 0 {
+		lockedBuffer, err := memguard.NewImmutableFromBytes([]byte(val))
+		if err != nil {
+			return err
+		}
+
+		secureMemory.value = lockedBuffer
 	}
+
+	b.memories[key] = secureMemory
 
 	return nil
 }
